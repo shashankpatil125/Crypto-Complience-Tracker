@@ -78,6 +78,12 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   handler satisfies AppPageConfig<"/register/token">
 }
 
+// Validate ../../src/app/stablecoin/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/stablecoin/page.js")
+  handler satisfies AppPageConfig<"/stablecoin">
+}
+
 
 
 

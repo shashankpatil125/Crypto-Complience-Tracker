@@ -5,5 +5,6 @@
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/landing/page": "app/landing/page.js",
   "/login/page": "app/login/page.js",
-  "/register/token/page": "app/register/token/page.js"
+  "/register/token/page": "app/register/token/page.js",
+  "/stablecoin/page": "app/stablecoin/page.js"
 }
