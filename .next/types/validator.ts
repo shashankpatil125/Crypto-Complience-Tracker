@@ -42,12 +42,6 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   handler satisfies AppPageConfig<"/dashboard">
 }
 
-// Validate ../../src/app/exchange/page.tsx
-{
-  const handler = {} as typeof import("../../src/app/exchange/page.js")
-  handler satisfies AppPageConfig<"/exchange">
-}
-
 // Validate ../../src/app/landing/page.tsx
 {
   const handler = {} as typeof import("../../src/app/landing/page.js")
@@ -66,22 +60,40 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   handler satisfies AppPageConfig<"/">
 }
 
+// Validate ../../src/app/register/defi/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/register/defi/page.js")
+  handler satisfies AppPageConfig<"/register/defi">
+}
+
+// Validate ../../src/app/register/exchange/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/register/exchange/page.js")
+  handler satisfies AppPageConfig<"/register/exchange">
+}
+
+// Validate ../../src/app/register/fund/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/register/fund/page.js")
+  handler satisfies AppPageConfig<"/register/fund">
+}
+
 // Validate ../../src/app/register/page.tsx
 {
   const handler = {} as typeof import("../../src/app/register/page.js")
   handler satisfies AppPageConfig<"/register">
 }
 
+// Validate ../../src/app/register/stablecoin/page.tsx
+{
+  const handler = {} as typeof import("../../src/app/register/stablecoin/page.js")
+  handler satisfies AppPageConfig<"/register/stablecoin">
+}
+
 // Validate ../../src/app/register/token/page.tsx
 {
   const handler = {} as typeof import("../../src/app/register/token/page.js")
   handler satisfies AppPageConfig<"/register/token">
-}
-
-// Validate ../../src/app/stablecoin/page.tsx
-{
-  const handler = {} as typeof import("../../src/app/stablecoin/page.js")
-  handler satisfies AppPageConfig<"/stablecoin">
 }
 
 
