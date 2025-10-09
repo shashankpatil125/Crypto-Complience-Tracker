@@ -7,6 +7,8 @@ import NavbarComponent from '@/components/common/Navbar';
 export default function DeFiProtocolRegistrationPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     protocolName: '',
     websiteUrl: '',
@@ -56,16 +58,99 @@ export default function DeFiProtocolRegistrationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
+    setSuccess(false);
     
     if (validateForm()) {
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log('DeFi Protocol registration submitted:', formData);
-        localStorage.removeItem('defiFormData');
-        router.push('/dashboard');
+        // Get auth token from localStorage
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          setError('Authentication required. Please login first.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        console.log('🚀 Submitting DeFi protocol registration...', formData);
+
+        // Prepare data for API
+        const apiData = {
+          protocolName: String(formData.protocolName),
+          websiteUrl: String(formData.websiteUrl),
+          supportedTokens: String(formData.supportedTokens),
+          protocolType: String(formData.protocolType),
+          smartContractAddresses: String(formData.smartContractAddresses),
+          blockchainNetworks: String(formData.blockchainNetworks)
+        };
+
+        console.log('📤 Sending data to API:', apiData);
+
+        // Try the API call with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+        const response = await fetch('http://localhost:3001/api/defi/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(apiData),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const textResponse = await response.text();
+          console.error('❌ Non-JSON response received:', textResponse);
+          setError(`Server error: Received non-JSON response (${response.status}). Please check if the API server is running correctly.`);
+          return;
+        }
+
+        let result;
+        try {
+          result = await response.json();
+          console.log('📥 API Response:', result);
+        } catch (parseError) {
+          console.error('❌ JSON parsing error:', parseError);
+          setError('Failed to parse server response. The server may be returning invalid JSON.');
+          return;
+        }
+
+        if (result.success) {
+          setSuccess(true);
+          console.log('✅ DeFi protocol registration submitted successfully!');
+          localStorage.removeItem('defiFormData');
+          
+          // Show success message for 3 seconds, then redirect
+          setTimeout(() => {
+            router.push('/dashboard');
+          }, 3000);
+        } else {
+          setError(result.message || result.error || 'Failed to submit DeFi protocol registration');
+          console.error('❌ Registration failed:', result.message || result.error);
+        }
       } catch (error) {
-        console.error('Submission error:', error);
+        console.error('🌐 Error during registration:', error);
+        
+        if (error instanceof Error) {
+          if (error.name === 'AbortError') {
+            setError('Request timed out. Please check your connection and try again.');
+          } else if (error instanceof SyntaxError && error.message.includes('JSON')) {
+            setError('Server returned invalid JSON response. Please try again or contact support.');
+          } else if (error instanceof TypeError && error.message.includes('fetch')) {
+            setError('Network error. Please check your internet connection and try again.');
+          } else if (error.message.includes('Failed to fetch')) {
+            setError('Cannot connect to server. Please ensure the application is running correctly.');
+          } else {
+            setError(`Registration failed: ${error.message}`);
+          }
+        } else {
+          setError('An unexpected error occurred. Please try again.');
+        }
       } finally {
         setIsSubmitting(false);
       }
@@ -113,6 +198,40 @@ export default function DeFiProtocolRegistrationPage() {
             Register your decentralized finance protocol for regulatory compliance tracking and monitoring.
           </p>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Success Message */}
+        {success && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-green-800">
+                  ✅ DeFi protocol registration submitted successfully! Redirecting to dashboard...
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Registration Form */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">

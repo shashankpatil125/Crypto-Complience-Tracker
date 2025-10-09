@@ -1,7 +1,7 @@
 'use client';
 
+import NavbarComponent from '@/components/common/Navbar';
 import { useState } from 'react';
-import NavbarComponent from '@/components/common/NavbarComponent';
 
 export default function CryptoFundRegistration() {
   const [activeTab, setActiveTab] = useState('form');

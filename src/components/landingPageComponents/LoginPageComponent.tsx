@@ -2,9 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { login, register, RegisterRequest, LoginRequest } from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginPageComponent() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -12,23 +16,69 @@ export default function LoginPageComponent() {
     companyName: ''
   });
   const router = useRouter();
+  const { login: authLogin } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const credentials: LoginRequest = { email, password };
+      const data = await login(credentials);
+
+      if (data.token && data.user) {
+        authLogin(data.user);
+        router.push('/dashboard');
+      } else {
+        setError(data.message || 'Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Login failed. Please try again.');
+    }
+  };
+
+  const handleRegister = async (userData: typeof formData) => {
+    try {
+      const registerData: RegisterRequest = {
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+        companyName: userData.companyName
+      };
+      
+      const data = await register(registerData);
+
+      if (data.success) {
+        setError('');
+        // After successful registration, automatically log in
+        await handleLogin(userData.email, userData.password);
+      } else {
+        setError(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Registration failed. Please try again.');
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login/register logic here
-    if (isLogin) {
-      console.log('Login attempt:', { username: formData.username, password: formData.password });
-      router.push('/dashboard');
-    } else {
-      console.log('Register attempt:', formData);
-      router.push('/dashboard');
+    setIsLoading(true);
+    setError('');
+
+    try {
+      if (isLogin) {
+        await handleLogin(formData.email || formData.username, formData.password);
+      } else {
+        await handleRegister(formData);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -108,20 +158,36 @@ export default function LoginPageComponent() {
             </button>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Username */}
+            {/* Email/Username */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Username
+              <label htmlFor={isLogin ? "email" : "email"} className="block text-sm font-medium text-gray-700 mb-2">
+                {isLogin ? 'Email' : 'Email'}
               </label>
               <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
                 onChange={handleInputChange}
-                placeholder="Enter your username"
+                placeholder="Enter your email address"
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors placeholder-gray-600 text-gray-900"
                 required
               />
@@ -144,19 +210,19 @@ export default function LoginPageComponent() {
               />
             </div>
 
-            {/* Email - Only for Register */}
+            {/* Username - Only for Register */}
             {!isLogin && (
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                  Username
                 </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
                   onChange={handleInputChange}
-                  placeholder="Enter your email address"
+                  placeholder="Enter your username"
                   className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors placeholder-gray-600 text-gray-900"
                   required
                 />
@@ -185,9 +251,20 @@ export default function LoginPageComponent() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-blue-800 text-white py-3 px-4 rounded-md hover:bg-blue-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium"
+              disabled={isLoading}
+              className="w-full bg-blue-800 text-white py-3 px-4 rounded-md hover:bg-blue-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              {isLogin ? 'Sign in' : 'Create Account'}
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {isLogin ? 'Signing in...' : 'Creating Account...'}
+                </>
+              ) : (
+                isLogin ? 'Sign in' : 'Create Account'
+              )}
             </button>
           </form>
 

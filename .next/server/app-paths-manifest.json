@@ -1,9 +1,13 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
+  "/api/login/route": "app/api/login/route.js",
+  "/api/register/route": "app/api/register/route.js",
+  "/api/tokens/register/route": "app/api/tokens/register/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/register/defi/page": "app/register/defi/page.js",
+  "/landing/page": "app/landing/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
   "/register/exchange/page": "app/register/exchange/page.js",
-  "/register/page": "app/register/page.js",
-  "/register/stablecoin/page": "app/register/stablecoin/page.js",
-  "/register/token/page": "app/register/token/page.js"
+  "/register/stablecoin/page": "app/register/stablecoin/page.js"
 }

@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface NavbarComponentProps {
   selectedOption?: string;
@@ -14,6 +15,7 @@ export default function NavbarComponent({ selectedOption: propSelectedOption }: 
   const [selectedOption, setSelectedOption] = useState(propSelectedOption || '');
 
   const router = useRouter();
+  const { user, logout } = useAuth();
 
   useEffect(()=>{
     if(selectedOption){
@@ -178,15 +180,23 @@ export default function NavbarComponent({ selectedOption: propSelectedOption }: 
           </div>
         </div>
 
-        {/* Right side - Connect Wallet and Logout */}
+        {/* Right side - User info, Connect Wallet and Logout */}
         <div className="flex items-center gap-4">
+          {user && (
+            <div className="text-sm text-gray-600">
+              Welcome, <span className="font-medium text-gray-900">{user.username}</span>
+            </div>
+          )}
           <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             Connect Wallet
           </button>
-          <button className="text-gray-700 hover:text-gray-900 transition-colors">
+          <button 
+            onClick={logout}
+            className="text-gray-700 hover:text-gray-900 transition-colors"
+          >
             Logout
           </button>
         </div>
