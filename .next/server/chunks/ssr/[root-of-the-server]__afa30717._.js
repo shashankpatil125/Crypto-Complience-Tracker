@@ -525,8 +525,8 @@ function TokenRegistrationPage() {
     const [success, setSuccess] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
-    // API Base URL - use local Next.js API route for better error handling
-    const API_BASE_URL = '/api';
+    // API Base URL - use real backend API
+    const API_BASE_URL = 'http://localhost:3001/api';
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
         tokenName: '',
         tokenSymbol: '',
@@ -925,7 +925,7 @@ function TokenRegistrationPage() {
             // Try the API call with timeout
             const controller = new AbortController();
             const timeoutId = setTimeout(()=>controller.abort(), 10000); // 10 second timeout
-            const response = await fetch(`${API_BASE_URL}/tokens/register-mock`, {
+            const response = await fetch(`${API_BASE_URL}/tokens/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
