@@ -12,6 +12,7 @@ services:
       - MONGODB_URL=${MONGODB_URL:-mongodb://admin:admin123@mongodb:27017/crypto-compliance?authSource=admin}
       - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001,http://72.60.27.182:3000,http://72.60.27.182:3001}
     restart: unless-stopped
     depends_on:
       - mongodb
