@@ -28,6 +28,8 @@ services:
     build:
       context: ./CCT-frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://72.60.27.182:3001/api}
     container_name: crypto-compliance-tracker-frontend
     ports:
       - "3000:3000"
