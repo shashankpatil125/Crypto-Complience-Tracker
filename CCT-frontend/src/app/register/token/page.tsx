@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import NavbarComponent from '@/components/common/Navbar';
-import { useAuth } from '@/contexts/AuthContext';
 
 // API Response Types
 interface TokenRegistrationResponse {
@@ -16,7 +15,7 @@ interface TokenRegistrationResponse {
         tokenCategory: string;
         status: string;
         createdAt: string;
-        [key: string]: any;
+        [key: string]: unknown;
     };
     error?: string;
 }
@@ -26,7 +25,6 @@ export default function TokenRegistrationPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const router = useRouter();
-    const { user } = useAuth();
 
     // API Base URL - use real backend API
     const API_BASE_URL = 'http://localhost:3001/api';
@@ -126,7 +124,7 @@ export default function TokenRegistrationPage() {
         { value: 'Not Applicable', label: 'Not Applicable' }
     ];
 
-    const handleInputChange = (field: string, value: any) => {
+    const handleInputChange = (field: string, value: string | boolean | Array<{ networkName: string; chainId: string }> | Array<{ network: string; contractAddress: string }> | Array<{ name: string; email: string; role: string }>) => {
         setFormData(prev => ({
             ...prev,
             [field]: value

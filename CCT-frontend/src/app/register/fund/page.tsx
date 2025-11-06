@@ -452,7 +452,7 @@ export default function CryptoFundRegistration() {
                     <div>
                       <h4 className="text-md font-semibold text-gray-900 mb-2">Investment Strategy</h4>
                       <p className="text-sm text-gray-600 mb-4">
-                        Describe the fund's approach to crypto investing, strategies employed, and primary focus areas
+                        Describe the fund&apos;s approach to crypto investing, strategies employed, and primary focus areas
                       </p>
                       <textarea
                         name="strategyDescription"
@@ -935,7 +935,7 @@ export default function CryptoFundRegistration() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Key Regulatory Considerations</h3>
                 <p className="text-gray-600 mb-4">
-                  Depending on your fund's jurisdiction, strategy, and investor base, there are several regulatory frameworks that may apply:
+                  Depending on your fund&apos;s jurisdiction, strategy, and investor base, there are several regulatory frameworks that may apply:
                 </p>
                 <ul className="list-disc list-inside space-y-2 text-gray-600">
                   <li>Securities regulations for tokenized assets</li>
@@ -951,7 +951,7 @@ export default function CryptoFundRegistration() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="border border-gray-200 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-900 mb-2">Cayman Islands</h4>
-                    <p className="text-sm text-gray-600">Popular for offshore funds, with the CIMA's virtual asset service provider (VASP) regime</p>
+                    <p className="text-sm text-gray-600">Popular for offshore funds, with the CIMA&apos;s virtual asset service provider (VASP) regime</p>
                   </div>
                   <div className="border border-gray-200 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-900 mb-2">Switzerland</h4>

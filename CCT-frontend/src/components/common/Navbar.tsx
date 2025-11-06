@@ -21,7 +21,7 @@ export default function NavbarComponent({ selectedOption: propSelectedOption }: 
     if(selectedOption){
       router.push(`/register/${selectedOption}`);
     }
-  },[selectedOption])
+  },[selectedOption, router])
 
   // Options object for the dropdown
   const registerOptions = [

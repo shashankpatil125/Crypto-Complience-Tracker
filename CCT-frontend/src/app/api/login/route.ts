@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Remove password from user object before returning
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
 
     // Generate a mock JWT token (in real app, you'd use proper JWT)
