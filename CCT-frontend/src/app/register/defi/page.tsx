@@ -89,7 +89,8 @@ export default function DeFiProtocolRegistrationPage() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-        const response = await fetch('http://localhost:3001/api/defi/register', {
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+        const response = await fetch(`${API_BASE_URL}/defi/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
