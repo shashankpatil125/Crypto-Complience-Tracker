@@ -1,9 +1,1 @@
-{
-  "/dashboard/page": "app/dashboard/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/landing/page": "app/landing/page.js",
-  "/login/page": "app/login/page.js",
-  "/page": "app/page.js",
-  "/register/exchange/page": "app/register/exchange/page.js",
-  "/register/token/page": "app/register/token/page.js"
-}
+{}
