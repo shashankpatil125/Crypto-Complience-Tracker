@@ -34,9 +34,7 @@ RUN npm ci --only=production && npm cache clean --force
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/src ./src
-COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts ./
-COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./
-COPY --from=builder --chown=nextjs:nodejs /app/next-env.d.ts ./
+COPY --from=builder --chown=nextjs:nodejs /app/next.config.js* ./
 COPY --from=builder --chown=nextjs:nodejs /app/postcss.config.mjs ./
 
 USER nextjs
